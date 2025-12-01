@@ -32,3 +32,41 @@ sudo systemctl restart ssh     #restartiamo il server ssh
 sudo systemctl status ssh       #ora si dovrebbe vedere active (running)
 ```
 
+
+## Configurazione della tastiera e lingua italiana su Ubuntu Server
+Ho impostato la lingua italiana impostando la tastiera italiana da riga di comando Ubuntu server
+
+Per configurare correttamente la tastiera, ho eseguito il seguente comando:
+
+```bash
+sudo dpkg-reconfigure keyboard-configuration
+```
+Durante la procedura, scegliere le seguenti opzioni:
+
+Keyboard model: Generic 105-key PC (o il modello che corrisponde alla tua tastiera)
+Country of origin: Italy
+Keyboard layout: Italian
+AltGr: default
+Compose key: None
+Ctrl+Alt+Backspace: No
+
+Dopo aver configurato la tastiera, bisogna ricaricare la configurazione con:
+
+```bash
+sudo service keyboard-setup restart
+sudo setupcon
+```
+Per aggiungere la lingua italiana:
+
+```bash
+sudo apt install language-pack-it   
+```
+e impostare l’italiano come locale:
+```bash
+sudo update-locale LANG=it_IT.UTF-8
+source /etc/default/locale         #ricaricare
+locale       #verificare
+```
+INSERISCI IMG 1
+
+
