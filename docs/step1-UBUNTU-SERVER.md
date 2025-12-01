@@ -56,13 +56,10 @@ Dopo aver configurato la tastiera, bisogna ricaricare la configurazione con:
 sudo service keyboard-setup restart
 sudo setupcon
 ```
-Per aggiungere la lingua italiana:
+Per aggiungere la lingua italiana e impostare l’italiano come locale:
 
 ```bash
 sudo apt install language-pack-it   
-```
-e impostare l’italiano come locale:
-```bash
 sudo update-locale LANG=it_IT.UTF-8
 source /etc/default/locale         #ricaricare
 locale       #verifica
@@ -79,14 +76,14 @@ Un file Netplan è un file YAML che definisce la configurazione della rete su Ub
 
 Il numero 50 indica che è letto dopo eventuali file “base” (ad esempio 01-netcfg.yaml) e può quindi sovrascriverne alcune impostazioni.
 
-Se vuoi modificare l’IP statico, conviene modificare questo file oppure creare un nuovo file con un numero più alto (es. 99-custom.yaml) per sovrascrivere le impostazioni senza toccare l’originale.
+**Se vuoi modificare l’IP statico, conviene modificare questo file oppure creare un nuovo file con un numero più alto (es. 99-custom.yaml) per sovrascrivere le impostazioni senza toccare l’originale.**
 
-1)Io ho prima fatto un backup del file originale con:
+1)**Io ho prima fatto un backup del file originale con:**
 ```bash
 sudo cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.bak
 ```
 
-2)modificato il file con:
+2)**modificato il file con:**
 ```bash
 sudo nano /etc/netplan/50-cloud-init.yaml
 ```
@@ -107,7 +104,7 @@ network:
 •	192.168.1.1 → il gateway della nostra LAN
 
 ```
-3) Infine ho applicato la configurazione netplan
+3)**Infine ho applicato la configurazione netplan**
 ```bash
 sudo netplan apply
 ip a show enp0s3
@@ -117,15 +114,9 @@ ip a show enp0s3
 Libera la porta 53 su Ubuntu (Fondamentale)
 Ubuntu ha un suo gestore DNS interno (systemd-resolved) che occupa la porta 53. Se proviamo ad aprire la porta per AdGuard, andranno in conflitto e AdGuard non funzionerà. Dobbiamo spegnerlo.
 ```bash
-# 1. 
 sudo systemctl stop systemd-resolved   #Fermato il servizio DNS di Ubuntu
-
-# 2. 
 sudo systemctl disable systemd-resolved   #Disabilitato per sempre (così non riparte al riavvio)
-
-# 3. 
 sudo rm /etc/resolv.conf   #Rimuovi il file di configurazione vecchio
-
 ```
 
 
