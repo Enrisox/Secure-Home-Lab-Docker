@@ -36,12 +36,12 @@ sudo systemctl status ssh       #ora si dovrebbe vedere active (running)
 # Configurazione della tastiera e lingua italiana su Ubuntu Server
 Ho impostato la lingua italiana impostando la tastiera italiana da riga di comando Ubuntu server
 
-Per configurare correttamente la tastiera, ho eseguito il seguente comando:
+**Per configurare correttamente la tastiera, ho eseguito il seguente comando:**
 
 ```bash
 sudo dpkg-reconfigure keyboard-configuration
 ```
-Durante la procedura, scegliere le seguenti opzioni:
+**Durante la procedura, scegliere le seguenti opzioni:**
 
 Keyboard model: Generic 105-key PC (o il modello che corrisponde alla tua tastiera)
 Country of origin: Italy
@@ -50,13 +50,13 @@ AltGr: default
 Compose key: None
 Ctrl+Alt+Backspace: No
 
-Dopo aver configurato la tastiera, bisogna ricaricare la configurazione con:
+**Dopo aver configurato la tastiera, bisogna ricaricare la configurazione con:**
 
 ```bash
 sudo service keyboard-setup restart
 sudo setupcon
 ```
-Per aggiungere la lingua italiana e impostare l’italiano come locale:
+**Per aggiungere la lingua italiana e impostare l’italiano come locale:**
 
 ```bash
 sudo apt install language-pack-it   
@@ -121,7 +121,7 @@ sudo rm /etc/resolv.conf   #Rimuovi il file di configurazione vecchio
 
 
 
-Nel prossimo step mostrerò l'installazione di Docker sulla VM Ubuntu server.
+**Nel prossimo step mostrerò l'installazione di Docker sulla VM Ubuntu server.**
 
 
 
