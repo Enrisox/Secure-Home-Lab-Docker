@@ -69,6 +69,55 @@ locale       #verifica
 ```
 ![lingua italiana](../imgs/img1.png)
 
+
+
+# Assegnare IP statico a Ubuntu server
+
+Un file Netplan è un file YAML che definisce la configurazione della rete su Ubuntu e altre distribuzioni Linux moderne. Serve a configurare interfacce, IP, gateway, DNS e altre impostazioni di rete, sostituendo i vecchi metodi come /etc/network/interfaces.
+
+50-cloud-init.yaml è il file generato automaticamente da cloud-init durante l’installazione del mio Ubuntu Server.
+
+Il numero 50 indica che è letto dopo eventuali file “base” (ad esempio 01-netcfg.yaml) e può quindi sovrascriverne alcune impostazioni.
+
+Se vuoi modificare l’IP statico, conviene modificare questo file oppure creare un nuovo file con un numero più alto (es. 99-custom.yaml) per sovrascrivere le impostazioni senza toccare l’originale.
+
+1)Io ho prima fatto un backup del file originale con:
+```bash
+sudo cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.bak
+```
+
+2)modificato il file con:
+```bash
+sudo nano /etc/netplan/50-cloud-init.yaml
+```
+```bash
+network:
+    version: 2
+    ethernets:
+        enp0s3:          #Controllare prima con ip a il nome dell’interfaccia e mettere quella
+            dhcp4: no
+            addresses:
+              - 192.168.1.20/24
+            gateway4: 192.168.1.1
+            nameservers:
+                addresses:
+                  - 1.1.1.1
+                  - 8.8.8.8
+•	192.168.1.20 # l’IP che vogliamo assegnare al server
+•	192.168.1.1 → il gateway della nostra LAN
+
+```
+3) Infine ho applicato la configurazione netplan
+```bash
+sudo netplan apply
+ip a show enp0s3
+```
+
+
+
+
+
+
 Nel prossimo step mostrerò l'installazione di Docker sulla VM Ubuntu server.
 
 
