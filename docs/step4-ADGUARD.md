@@ -2,10 +2,10 @@
 
 Quando crei un container in Advanced container settings → Restart policy, le opzioni sono:
 
-1 No	Il container non si riavvia mai automaticamente.
-2 Always	Il container si riavvia sempre se si ferma, incluso al riavvio del server.
-3 Unless-stopped	Si riavvia sempre, tranne se lo fermi manualmente.
-4 On-failure	Si riavvia solo se il container termina con errore. Puoi anche impostare un numero massimo di tentativi.
+* No	Il container non si riavvia mai automaticamente.
+* Always	Il container si riavvia sempre se si ferma, incluso al riavvio del server.
+* Unless-stopped	Si riavvia sempre, tranne se lo fermi manualmente.
+* On-failure	Si riavvia solo se il container termina con errore. Puoi anche impostare un numero massimo di tentativi.
 
 Sia per Wireguard che ADguard, è consigliato scegliere opzione **unless-stopped o always**.
 
@@ -17,7 +17,7 @@ sudo netstat -tulnp | grep :53
 
 **systemd-resolved** sta occupando la porta 53 sulle interfacce locali. E' un servizio di gestione della risoluzione dei nomi di dominio (DNS) presente nelle distribuzioni Linux moderne
 
-soluzione:
+**Soluzione:**
 
 **Disabilitare systemd-resolved**
 ```bash
