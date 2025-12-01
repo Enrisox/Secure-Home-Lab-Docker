@@ -97,8 +97,6 @@ scegli Self-signed certificate
 **Il container userà la porta:**
 https://IPSERVER:8443
 
-![ADGUARD](../imgs/img5.png)
-
 ### Da windows e dispositivi mobile ho impostato il container Adguard come server DNS preferito
 
 ![ADGUARD](../imgs/img6.png)
