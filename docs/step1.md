@@ -65,7 +65,7 @@ e impostare l’italiano come locale:
 ```bash
 sudo update-locale LANG=it_IT.UTF-8
 source /etc/default/locale         #ricaricare
-locale       #verificare
+locale       #verifica
 ```
 ![lingua italiana](imgs/img1.png)
 
