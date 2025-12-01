@@ -35,3 +35,5 @@ https://IP-DELLA-VM:9443      # HTTPS se sulla 9443, altrimenti 8000 con http
 ```
 
 ![Portainer](../imgs/img2.png)
+
+Portainer è pronto all'uso quindi procediamo al prossimo step, il 4, dove installerò container Wireguard per VPN e Adguard come filtro tracking e advertising.
