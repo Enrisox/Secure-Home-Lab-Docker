@@ -13,7 +13,7 @@ Ho cercato di includere i problemi riscontrati e le relative soluzioni.
 
 📚**Indice dei contenuti**
 
-Ciascuna guida è contenuta nella cartella /docs.
+Ciascuna guida è contenuta nella cartella /docs.  <br>
 📄 [Step 1 – Ubuntu Server](docs/step1-UBUNTU-SERVER.md)  
 📄 [Step 2 – Docker](docs/step2-DOCKER.md)  
 📄 [Step 3 – Portainer](docs/step3-PORTAINER.md)  
