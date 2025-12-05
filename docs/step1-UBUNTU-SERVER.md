@@ -91,7 +91,7 @@ sudo nano /etc/netplan/50-cloud-init.yaml
 network:
     version: 2
     ethernets:
-        enp0s3:          #Controllare prima con ip a il nome dell’interfaccia e mettere quella
+        enp0s3:     #Controllare prima con ip a il nome dell’interfaccia es:eth0 per porta ethernet Raspberry o wlan0 per quella wifi
             dhcp4: no
             addresses:
               - 192.168.1.20/24
