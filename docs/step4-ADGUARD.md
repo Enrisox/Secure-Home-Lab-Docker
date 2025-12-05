@@ -38,7 +38,7 @@ sudo systemctl restart docker     #Riavviare Docker (opzionale ma consigliato)
 
 1)**Ho creato volumi per Adguard dal menù a sx di Portainer**
 
-adguard_config
+adguard_config <br>
 adguard_data
 
 2)**Da Portainer --> stack --> nuovo stack --> incolliamo il docker compose desiderato**
