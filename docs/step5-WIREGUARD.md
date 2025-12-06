@@ -44,3 +44,7 @@ volumes:
 Per concludere, inquadrare QR code su app Wireguard del dispositivo mobile e controllare che i dati siano corretti( ip e porte) 
 
 Sul router è necessario configurare il port forwarding della porta scelta, sul router di casa!
+
+## DDNS in caso di ip dinamico
+
+Dato che mio ISP mi assegna un IP diverso ad ogni ravvio del "router" di casa, ho creato un dominio DDNS con un piano gratuito e sostituito l'endpoint con il dominio suddetto in modo che se l'ip varia, non dovrò modifcare manualmente l'ip dell'endpoint dal mio dispositivo mobile.
