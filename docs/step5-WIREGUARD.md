@@ -72,5 +72,4 @@ cliccando sui log del container duckdns si dovrebbe vedere questo messaggio:
 ![duckdns](../imgs/img9.png)
 
 Detecting IPv4 via DuckDNS
-
 DuckDNS request at Sun Dec  7 20:28:50 CET 2025 successful. IP(s) unchanged.
