@@ -68,3 +68,5 @@ services:
       - TOKEN=IL_TUO_TOKEN_DUCKDNS          #lo trovi su duckdns.org nella sezione profilo
     restart: unless-stopped
 ```
+
+![duckdns](../imgs/img9.png)
