@@ -64,7 +64,7 @@ services:
       - PUID=1000              # lo trovi dal comando id <tuo user>
       - PGID=1000              # lo trovi dal comando id <tuo user>
       - TZ=Europe/Rome
-      - SUBDOMAINS=enrisox     # tuo dominio principale
+      - SUBDOMAINS=DOMINIOSCELTO    # tuo dominio principale
       - TOKEN=IL_TUO_TOKEN_DUCKDNS          #lo trovi su duckdns.org nella sezione profilo
     restart: unless-stopped
 ```
