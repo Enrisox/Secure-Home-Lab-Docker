@@ -1,5 +1,5 @@
 # Configurazione firewall UFW
-Comando per mostrare stato firewall UFW Linux:
+**Comando per mostrare stato firewall UFW Linux:**
 ```bash
 sudo ufw status verbose
 ```
