@@ -10,7 +10,7 @@ sudo ufw default deny incoming
 sudo ufw default allow outgoing
 ```
 
-**Ho permesso solo i servizi che servono Caddy e Wireguard)**
+**Ho permesso solo i servizi che servono: Caddy e Wireguard**
 ```bash
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
