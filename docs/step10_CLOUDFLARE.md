@@ -19,8 +19,7 @@ Dal fornitore del dominio, nella sezione DNS settings:
 
 DNSSEC deve essere disattivato. <br>
 In Name server ho inserito i nomi host indicati da Cloudflare e salvato.<br> D'ora in avanti gestirà tutto Cloudflare e non sarà necessario accedere al portale del fornitore di dominio.
-Creare i record A DNS su cloudflare, tutti puntati al mio ip pubblico e con proxy status: proxied(nuvola arancione)
-Creazione di un token API Cloudflare con permessi zone DNS:Edit per il proprio dominio, necessaario per il DDNS.
+Ho poi creato i **record A DNS** su Cloudflare, tutti puntati al mio ip pubblico e con proxy status: proxied(nuvola arancione) e creato un token API Cloudflare con permessi zone DNS:Edit per il proprio dominio, necessario per il DDNS.
 
 ## Gestione IP dinamico con container Cloudflare DDNS
 Il mio container Cloudflare DDNS si occupa di tenere aggiornati automaticamente i record DNS di Cloudflare con il mio IP pubblico reale, così i tuoi domini/subdomini puntano sempre al tuo Raspberry anche se l’ISP cambia IP.​
