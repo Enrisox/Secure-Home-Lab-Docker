@@ -27,6 +27,8 @@ Ciascuna guida è contenuta nella cartella /docs.  <br>
 📄 [Step 6 – Raspberry Pi 5](docs/step6-RaspberryPi5.md)<br>
 📄 [Step 7 – Caddy](docs/step7_CADDY.md)<br>
 📄 [Step 8 – UFW](docs/step8_FIREWALL.md)<br>
+📄 [Step 9 – CROWDSEC](docs/step9_CROWDSEC.md)<br>
+📄 [Step 10 – CLOUDFLARE](docs/step10_CLOUDFLARE.md)<br>
 
 **🧱 Obiettivi del progetto**
 
