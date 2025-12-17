@@ -53,3 +53,21 @@ Gli scenari confrontano i log normalizzati dai parser con soglie/finestre tempor
 Confrontano i log normalizzati dai parser con soglie/finestre temporali (count, timeframe, ecc.) per riconoscere pattern come brute force, scan, crawl aggressivi.
 
 Quando uno scenario “scatta”, CrowdSec genera un alert (per tracciabilità) e può generare una o più decisions (es. ban temporaneo di un IP), che poi verranno applicate da un bouncer come iptables
+
+## log live
+```dockerfile
+sudo journalctl -u crowdsec -f
+```
+
+## Bouncer Crowdsec
+Non è servito impostare manualmente la chiave perché il bouncer iptables, installato via apt, può auto‑registrarsi sulla Local API quando CrowdSec è sulla stessa macchina e generare da solo la API key (di solito scrivendola in un file .yaml.local)
+```dockerfile
+sudo cat /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
+```
+
+Il bouncer di CrowdSec è il componente che mette in pratica le decisioni prese dal motore CrowdSec (ban, captcha, ecc.): il motore rileva l’attacco dai log e salva una “decisione” nella Local API, mentre il bouncer interroga la Local API e applica la contromisura nel punto giusto (firewall, Cloudflare, reverse proxy, ecc.)
+Nel mio caso, il crowdsec-firewall-bouncer è un bouncer “firewall”: applica i ban a livello di iptables/nftables sul server, bloccando il traffico in ingresso dagli IP “cattivi”.​
+
+Differenza rapida:
+**CrowdSec (engine/agent)**: analizza log → genera alert/decisioni.​
+**Bouncer**: legge decisioni dalla Local API (autenticandosi con una API key) → le applica (blocca).
