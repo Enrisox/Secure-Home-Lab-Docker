@@ -87,11 +87,9 @@ Riduce il rischio che un exploit nel container riesca a "scappare" sull'host
 
 7. **Ridurre privilegi**: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.
 8. **Isolare risorse host** (mount/namespace/cgroups):
-9. **Audit delle immagini**: usare immagini trusted e scanner di vulnerabilità ,come Trivy nel mio caso,riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).<br>
-​
-10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.<br>
-​
-11. **Test e monitoraggio**: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).<br>
+9. **Audit delle immagini**: usare immagini trusted e scanner di vulnerabilità ,come Trivy nel mio caso,riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
+10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
+11. **Test e monitoraggio**: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).
 
 **Mount di Path Sensibili (in RW)**
 **Montare una cartella del server (host) dentro il container con permessi di scrittura** (RW - Read/Write). Ad esempio, montare la cartella /etc dell'host dentro il container.
