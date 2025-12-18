@@ -20,13 +20,12 @@ Il fatto che sia “in rete interna proxata da Caddy” riduce l’esposizione d
 ## Contromisure
 “Python minimal non-root” aiuta perché riduce l’impatto di molte escalation banali dentro al container, ma non protegge da bug kernel/host e non impedisce scansione/abusi verso altri target raggiungibili via rete. La vera differenza la fanno: privilegi/capabilities del container (es. capability pericolose come quelle che abilitano azioni quasi “da host”) e mount sensibili (docker.sock, volumi host in scrittura, /proc//sys esposti male). Anche le policy di sistema (seccomp/AppArmor) contano, perché limitano le syscalls e quindi restringono la superficie per exploit e tecniche di escape.​
 
-## Hardening pratico (alto ROI)
+## Hardening 
+
 - **segmentare la rete**: crea reti Docker distinte (frontend/proxy, backend, db) e attacca i container solo alle reti necessarie, come raccomandato nelle best practice per ridurre lateral movement.​
--Evitare “chiavi del regno”: niente --privileged, niente --cap-add non indispensabili, e soprattutto niente mount di /var/run/docker.sock dentro container applicativi.​
+- Evitare “chiavi del regno”: niente --privileged, niente --cap-add non indispensabili, e soprattutto niente mount di /var/run/docker.sock dentro container applicativi.​
 -Ridurre impatto di una container escape: valutare Docker rootless per limitare i danni anche se un container viene bucato.​
 -Abilitare restrizioni runtime: mantieni seccomp attivo (profilo default o più stretto) e profili LSM (AppArmor/SELinux) dove possibile
-
-
 ​- Kernel aggiornato e patch veloci: i container condividono il kernel dell’host, quindi molte tecniche di escape sfruttano CVE del kernel/cgroups; patchare e riavviare su kernel fixed riduce proprio quella classe di attacchi.​
 - SELinux/AppArmor + seccomp: sono “guardrail” runtime; OWASP consiglia di non disabilitare i profili di sicurezza di default e di usare seccomp/AppArmor/SELinux per restringere syscalls e azioni possibili nel container.​
 - Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.​
