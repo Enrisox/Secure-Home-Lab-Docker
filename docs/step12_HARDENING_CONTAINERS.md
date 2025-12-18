@@ -22,7 +22,7 @@ Il fatto che sia “in rete interna proxata da Caddy” riduce l’esposizione d
 
 ## Container security attraverso integrazioni nel docker-compose.yml
 
-## cap_drop: ALL 
+## Cap_drop: ALL 
 In Linux, il potere dell'utente root non è un blocco unico, ma è diviso in circa 40 unità chiamate **Capabilities**.
 
 Tradizionalmente, in Linux, il mondo era diviso in due:
@@ -49,12 +49,12 @@ I tre set principali che trovi in un processo sono:
 - **Inheritable**: Sono le capacità che il processo può tramandare ai suoi processi figli (es. quando lanci un altro programma).
 - **Effective**: È il set dei poteri attualmente attivi. Quando il kernel deve decidere se farti fare qualcosa, guarda qui.
 
-**cap_drop: ALL**: Rimuove letteralmente ogni privilegio speciale. Il processo diventa un "ospite" estremamente limitato.
+**Cap_drop: ALL**: Rimuove letteralmente ogni privilegio speciale. Il processo diventa un "ospite" estremamente limitato.
 Molti exploit sfruttano capacità specifiche (come CAP_RAW_NET) per fare scansioni di rete o attacchi ARP spoofing all'interno del cluster. Se le togliamo tutte, l'attaccante si ritrova con le mani legate.
 
 **Di solito si usa cap_drop: ALL e poi si riaggiunge solo lo stretto necessario con cap_add.**
 
-## no-new-privileges: true 
+## No-new-privileges: true 
 Questo è un parametro del kernel Linux (PR_SET_NO_NEW_PRIVS). È la difesa contro il classico attacco di **Privilege Escalation.**
 
 Il trucco del SUID: In Linux, esistono file (come passwd o sudo) che hanno un bit chiamato SUID. Se esegui quel file, lo esegui con i permessi del proprietario (root), non i tuoi.
@@ -63,7 +63,7 @@ Cosa fa questa opzione: Impedisce al processo (e a tutti i suoi figli) di guadag
 
 Scenario: Se un attaccante riesce a caricare uno script malevolo che tenta di sfruttare un binario di sistema per diventare root, il kernel bloccherà l'operazione sul nascere. È come dire al sistema: "Qualunque cosa accada, questo processo non può mai diventare più potente di quanto lo sia ora".
 
-## tmpfs: /tmp (Isolamento della scrittura)
+## Tmpfs: /tmp (Isolamento della scrittura)
 Montare /tmp in RAM (tramite tmpfs) ha tre vantaggi strategici:
 
 **Anti-Persistenza**: Se un attaccante scarica un malware o un file di configurazione malevolo in /tmp, non appena il container crasha o viene riavviato, quel file svanisce nel nulla.
