@@ -82,14 +82,12 @@ Montare /tmp in RAM (tramite tmpfs) ha tre vantaggi strategici:
 6. **SELinux/AppArmor + seccomp** OWASP consiglia di non disabilitare i profili di sicurezza di default e di usare seccomp/AppArmor/SELinux per restringere syscalls e azioni possibili nel container.
 **Application armor** è un sistema di Mandatory Access Control (MAC), ovvero controllo degli accessi obbligatorio: non basta che un file    sia leggibile dal tuo utente, deve anche essere esplicitamente permesso dal profilo AppArmor del programma che stai usando
 Quando usi Docker su sistemi come Ubuntu o Debian, Docker applica automaticamente un profilo di base chiamato docker-default a tutti i container, a meno che tu non lo disabiliti.​
-
 Questo profilo predefinito fa già un buon lavoro:
-
 Impedisce di scrivere in cartelle critiche del sistema (/sys, /proc).
 Blocca operazioni pericolose (come montare nuovi dischi).
 Riduce il rischio che un exploit nel container riesca a "scappare" sull'host
 
-7.Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.
+7. Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.
 8. Isolare risorse host (mount/namespace/cgroups):
 - **Mount di Path Sensibili (in RW)**
 - **Montare una cartella del server (host) dentro il container con permessi di scrittura** (RW - Read/Write). Ad esempio, montare la cartella /etc dell'host dentro il container.
