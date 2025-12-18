@@ -109,7 +109,7 @@ Questo file è l'API del demone Docker. Chiunque possa comunicare con questo soc
 ​
 10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.<br>
 ​
-11. Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).<br>​
+11. **Test e monitoraggio**: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).<br>​
 ​
 # Trivy
 
