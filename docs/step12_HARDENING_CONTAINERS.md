@@ -95,10 +95,10 @@ Di default, Docker limita ciò che un container può vedere e fare con /proc e /
 - **Esposizione del Docker Socket**
 Montare il file /var/run/docker.sock dell'host all'interno di un container.
 
-Questo file è l'API del demone Docker. Chiunque possa comunicare con questo socket può dare ordini a Docker, come "avvia un nuovo container". Un attaccante che controlla un container con accesso al socket può semplicemente lanciare un altro container, questa volta privilegiato (--privileged) e con la cartella radice dell'host (/) montata al suo interno. A quel punto ha il controllo totale della macchina. È l'escape più classico e devastante.​
-9. **Audit delle immagini**: usare immagini trusted e scanner di vulnerabilità ,come Trivy nel mio caso,riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
-10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
-11. Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).​
+Questo file è l'API del demone Docker. Chiunque possa comunicare con questo socket può dare ordini a Docker, come "avvia un nuovo container". Un attaccante che controlla un container con accesso al socket può semplicemente lanciare un altro container, questa volta privilegiato (--privileged) e con la cartella radice dell'host (/) montata al suo interno. A quel punto ha il controllo totale della macchina. È l'escape più classico e devastante.<br>​
+9. **Audit delle immagini**: usare immagini trusted e scanner di vulnerabilità ,come Trivy nel mio caso,riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).<br>​
+10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.<br>​
+11. Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).<br>​
 
 # Trivy
 
