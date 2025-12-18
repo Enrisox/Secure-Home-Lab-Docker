@@ -29,6 +29,9 @@ Ciascuna guida è contenuta nella cartella /docs.  <br>
 📄 [Step 8 – UFW](docs/step8_FIREWALL.md)<br>
 📄 [Step 9 – CROWDSEC](docs/step9_CROWDSEC.md)<br>
 📄 [Step 10 – CLOUDFLARE](docs/step10_CLOUDFLARE.md)<br>
+📄 [Step 11 – FAIL2BAN](docs/step11_FAIL2BAN.md)<br>
+📄 [Step 12 – HARDENING](docs/step12_HARDENING_CONTAINERS.md)<br>
+
 
 **🧱 Obiettivi del progetto**
 
