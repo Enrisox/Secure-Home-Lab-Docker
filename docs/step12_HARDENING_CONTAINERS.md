@@ -65,9 +65,7 @@ Scenario: Se un attaccante riesce a caricare uno script malevolo che tenta di sf
 Montare /tmp in RAM (tramite tmpfs) ha tre vantaggi strategici:
 
 **Anti-Persistenza**: Se un attaccante scarica un malware o un file di configurazione malevolo in /tmp, non appena il container crasha o viene riavviato, quel file svanisce nel nulla.
-
 **Performance**: Scrivere in RAM è molto più veloce che scrivere sul file system del container (che spesso usa un driver "overlay" lento).
-
 **Read-Only Root FS**: Spesso questa opzione si usa insieme a readOnlyRootFilesystem: true. Se rendi tutto il container non scrivibile (per sicurezza), l'app smetterebbe di funzionare perché non può scrivere i suoi file temporanei. Usando tmpfs su /tmp, dai all'app un piccolo spazio sicuro dove "sfogarsi" senza compromettere l'integrità del resto del file system.
 
 ## Hardening 
