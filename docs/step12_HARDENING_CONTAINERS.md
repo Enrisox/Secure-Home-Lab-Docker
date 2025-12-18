@@ -77,14 +77,28 @@ Montare /tmp in RAM (tramite tmpfs) ha tre vantaggi strategici:
 1. **segmentare la rete**: crea reti Docker distinte e attacca i container solo alle reti necessarie, come raccomandato nelle best practice per ridurre **lateral movement**.​
 2. Evitare  **--privileged** e **--cap-add(permessi Linux granulari) non indispensabili**, e soprattutto niente mount di /var/run/docker.sock dentro container applicativi.​
 3. Ridurre impatto di una **container escape**: valutare Docker rootless per limitare i danni anche se un container viene bucato.​
-4. Abilitare restrizioni runtime: mantieni seccomp attivo (profilo default o più stretto) e profili LSM (AppArmor/SELinux) dove possibile
+4. **Abilitare restrizioni runtime**: mantieni seccomp attivo (profilo default o più stretto) e profili LSM (AppArmor/SELinux) dove possibile
 5. **Kernel aggiornato e patch veloci**: i container condividono il kernel dell’host, quindi molte tecniche di escape sfruttano CVE del kernel/cgroups; patchare e riavviare su kernel fixed riduce proprio quella classe di attacchi.​
 6. **SELinux/AppArmor + seccomp** OWASP consiglia di non disabilitare i profili di sicurezza di default e di usare seccomp/AppArmor/SELinux per restringere syscalls e azioni possibili nel container.​
 7. Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.​
-- Isolare risorse host (mount/namespace/cgroups): mount in RW di path sensibili, accesso eccessivo a /proc//sys, o esposizioni tipo Docker socket aumentano tantissimo le chance di takeover/escape.​
-- Audit delle immagini: usare immagini trusted e scanner di vulnerabilità riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
-- Segmentazione di rete: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
-- Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).​
+8. Isolare risorse host (mount/namespace/cgroups):
+- **Mount di Path Sensibili (in RW)**
+- **Montare una cartella del server (host) dentro il container con permessi di scrittura** (RW - Read/Write). Ad esempio, montare la cartella /etc dell'host dentro il container.
+
+Se un attaccante ottiene il controllo dell'app nel container, può usare questo "ponte" per modificare direttamente i file di sistema dell'host. Potrebbe aggiungere un utente, modificare le chiavi SSH autorizzate, disabilitare il firewall, ecc. È la via più diretta per un takeover completo del server.
+
+- **Accesso a /proc o /sys**
+/proc e /sys sono filesystem speciali in Linux che non contengono file veri e propri, ma l'interfaccia di controllo del kernel. Permettono di vedere e a volte modificare i processi in esecuzione e i parametri del sistema operativo.
+
+Di default, Docker limita ciò che un container può vedere e fare con /proc e /sys. Ma se si allentano queste restrizioni (spesso usando --privileged), un attaccante potrebbe raccogliere informazioni su tutti i processi dell'host (non solo quelli del container) o tentare di manipolare il kernel per facilitare un escape (fuga dal container).
+
+- **Esposizione del Docker Socket**
+Montare il file /var/run/docker.sock dell'host all'interno di un container.
+
+Questo file è l'API del demone Docker. Chiunque possa comunicare con questo socket può dare ordini a Docker, come "avvia un nuovo container". Un attaccante che controlla un container con accesso al socket può semplicemente lanciare un altro container, questa volta privilegiato (--privileged) e con la cartella radice dell'host (/) montata al suo interno. A quel punto ha il controllo totale della macchina. È l'escape più classico e devastante.​
+9. **Audit delle immagini**: usare immagini trusted e scanner di vulnerabilità ,come Trivy nel mio caso,riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
+10. **Segmentazione di rete**: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
+11. Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).​
 
 # Trivy
 
