@@ -1,24 +1,9 @@
-Anche se l’app gira in un container “minimal” e non-root, il rischio non è zero: se l’app viene compromessa (RCE), l’attaccante ottiene un punto d’appoggio nella tua rete interna e può provare movimento laterale verso altri servizi/host, e in alcuni casi tentare una “container escape” sfruttando configurazioni deboli o bug di kernel/runtime.​
+# Ulteriori misure di hardening dei Containers
 
-Uscita dal container (escape)
-L’isolamento dei container non è “una VM”: condividono il kernel dell’host, quindi vulnerabilità del kernel/handler di syscalls o del runtime possono permettere escalation/escape anche partendo da dentro il container. Nella pratica, molte escape diventano realistiche quando si combinano 2 fattori: una vulnerabilità + una configurazione rischiosa (privileged, mount pericolosi, ecc.). Un caso classico e devastante è avere montato /var/run/docker.sock: da lì un attaccante può pilotare Docker e far partire un container privilegiato con mount del filesystem host, ottenendo accesso al sistema.​
+Anche se l’app gira in un container “minimal” e non-root, il rischio non è azzerato: se l’app viene compromessa (RCE), l’attaccante ottiene un punto d’appoggio nella rete interna e può provare movimento laterale verso altri servizi/host, e in alcuni casi tentare una “container escape” sfruttando configurazioni deboli o bug di kernel/runtime.​
 
-Movimento laterale (lateral movement)
-Il fatto che sia “in rete interna proxata da Caddy” riduce l’esposizione diretta, ma se l’app dietro Caddy ha una falla e viene eseguito codice nel container, da lì l’attaccante può comunque parlare con ciò che è raggiungibile sulla rete Docker/LAN (DB, Redis, altri container, servizi interni). Docker, su bridge default, permette inter-container connectivity di base, quindi se metti tanti servizi sulla stessa rete senza segmentazione, stai creando una rete “piatta” che facilita il movimento laterale. La mitigazione tipica è micro-segmentare: reti separate e regole che permettono solo i flussi necessari, così anche se un servizio cade non diventa automaticamente “pivot” verso tutto il resto.​
-
-Nel tuo setup: cosa conta davvero
-“Python minimal non-root” aiuta perché riduce l’impatto di molte escalation banali dentro al container, ma non protegge da bug kernel/host e non impedisce scansione/abusi verso altri target raggiungibili via rete. La vera differenza la fanno: privilegi/capabilities del container (es. capability pericolose come quelle che abilitano azioni quasi “da host”) e mount sensibili (docker.sock, volumi host in scrittura, /proc//sys esposti male). Anche le policy di sistema (seccomp/AppArmor) contano, perché limitano le syscalls e quindi restringono la superficie per exploit e tecniche di escape.​
-
-Hardening pratico (alto ROI)
--Taglia la rete: crea reti Docker distinte (frontend/proxy, backend, db) e attacca i container solo alle reti necessarie, come raccomandato nelle best practice per ridurre lateral movement.​
--Evita “chiavi del regno”: niente --privileged, niente --cap-add non indispensabili, e soprattutto niente mount di /var/run/docker.sock dentro container applicativi.​
--Riduci impatto di un’escape: valuta Docker rootless (o almeno userns-remap) per limitare i danni anche se un container viene bucato.​
--Abilita restrizioni runtime: mantieni seccomp attivo (profilo default o più stretto) e profili LSM (AppArmor/SELinux) dove possibile
-
-
+## Container escape
 Una “container escape” è quando un processo che gira dentro un container riesce a uscire dai confini di isolamento del container e ottenere accesso a risorse che non dovrebbe vedere, come filesystem/risorse dell’host o altri container sullo stesso host.​
-
-Cosa significa in pratica
 Se un attaccante compromette la tua app (es. RCE) e poi fa container escape, non è più “limitato” a quel container: può potenzialmente arrivare all’host Linux e quindi avere un impatto molto più grave (furto di dati, persistenza, controllo di altri servizi).​
 
 Come può succedere
@@ -29,21 +14,46 @@ I container condividono il kernel dell’host, quindi l’isolamento non è “a
 
 container escape (uscire dal container verso l’host) e lateral movement (muoversi da un servizio compromesso verso altri servizi/host).​
 
-Cosa vuol dire ogni punto (in concreto)
--Kernel aggiornato e patch veloci: i container condividono il kernel dell’host, quindi molte tecniche di escape sfruttano CVE del kernel/cgroups; patchare e riavviare su kernel fixed riduce proprio quella classe di attacchi.​
--SELinux/AppArmor + seccomp: sono “guardrail” runtime; OWASP consiglia di non disabilitare i profili di sicurezza di default e di usare seccomp/AppArmor/SELinux per restringere syscalls e azioni possibili nel container.​
--Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.​
--Isolare risorse host (mount/namespace/cgroups): mount in RW di path sensibili, accesso eccessivo a /proc//sys, o esposizioni tipo Docker socket aumentano tantissimo le chance di takeover/escape.​
--Audit delle immagini: usare immagini trusted e scanner di vulnerabilità riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
--Segmentazione di rete: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
--Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).​
+## Lateral movement
+Il fatto che sia “in rete interna proxata da Caddy” riduce l’esposizione diretta, ma se l’app dietro Caddy ha una falla e viene eseguito codice nel container, da lì l’attaccante può comunque parlare con ciò che è raggiungibile sulla rete Docker/LAN (DB, Redis, altri container, servizi interni). Docker, su bridge default, permette inter-container connectivity di base, quindi se metti tanti servizi sulla stessa rete senza segmentazione, stai creando una rete “piatta” che facilita il movimento laterale. La mitigazione tipica è micro-segmentare: reti separate e regole che permettono solo i flussi necessari, così anche se un servizio cade non diventa automaticamente “pivot” verso tutto il resto.​
 
-Tradotto nel tuo scenario (Python non-root + Caddy)
-Queste misure non dicono “sei al 100% sicuro”, dicono “anche se ti bucano l’app, è più difficile uscire dal container e più difficile muoversi lateralmente”. Il grosso del rischio residuo, di solito, sta in: rete troppo piatta (tutti i container insieme), privilegi/capabilities/mount eccessivi, e host non aggiornato.
+## Contromisure
+“Python minimal non-root” aiuta perché riduce l’impatto di molte escalation banali dentro al container, ma non protegge da bug kernel/host e non impedisce scansione/abusi verso altri target raggiungibili via rete. La vera differenza la fanno: privilegi/capabilities del container (es. capability pericolose come quelle che abilitano azioni quasi “da host”) e mount sensibili (docker.sock, volumi host in scrittura, /proc//sys esposti male). Anche le policy di sistema (seccomp/AppArmor) contano, perché limitano le syscalls e quindi restringono la superficie per exploit e tecniche di escape.​
+
+## Hardening pratico (alto ROI)
+- **segmentare la rete**: crea reti Docker distinte (frontend/proxy, backend, db) e attacca i container solo alle reti necessarie, come raccomandato nelle best practice per ridurre lateral movement.​
+-Evitare “chiavi del regno”: niente --privileged, niente --cap-add non indispensabili, e soprattutto niente mount di /var/run/docker.sock dentro container applicativi.​
+-Ridurre impatto di una container escape: valutare Docker rootless per limitare i danni anche se un container viene bucato.​
+-Abilitare restrizioni runtime: mantieni seccomp attivo (profilo default o più stretto) e profili LSM (AppArmor/SELinux) dove possibile
 
 
-# trivy
+​- Kernel aggiornato e patch veloci: i container condividono il kernel dell’host, quindi molte tecniche di escape sfruttano CVE del kernel/cgroups; patchare e riavviare su kernel fixed riduce proprio quella classe di attacchi.​
+- SELinux/AppArmor + seccomp: sono “guardrail” runtime; OWASP consiglia di non disabilitare i profili di sicurezza di default e di usare seccomp/AppArmor/SELinux per restringere syscalls e azioni possibili nel container.​
+- Ridurre privilegi: OWASP raccomanda di “set a user” (non root) e di prevenire escalation in-container (es. no-new-privileges, limitazione capabilities) perché i privilegi extra amplificano l’impatto di una compromissione.​
+- Isolare risorse host (mount/namespace/cgroups): mount in RW di path sensibili, accesso eccessivo a /proc//sys, o esposizioni tipo Docker socket aumentano tantissimo le chance di takeover/escape.​
+- Audit delle immagini: usare immagini trusted e scanner di vulnerabilità riduce la probabilità di portarti in casa CVE note (dipendenze Python, libc, openssl, ecc.).​
+- Segmentazione di rete: OWASP cita anche il tema “disable inter-container communication” e, più in generale, separare reti/permessi limita il lateral movement se un container viene bucato.​
+- Test e monitoraggio: l’idea è trovare vulnerabilità/config sbagliate prima degli altri e rilevare comportamenti anomali a runtime (exec sospetti, connessioni strane, ecc.).​
 
+# Trivy
+
+**Trivy è uno scanner di sicurezza per:**
+- immagini Docker
+- filesystem
+- repository di codice
+- dipendenze
+- configurazioni (IaC)
+
+**Trivy individua:**
+
+- CVE nelle librerie (Python, pip, apt, ecc.)
+- pacchetti di sistema vulnerabili
+- secret hardcoded (password, token)
+- errori di configurazione Dockerfile / compose
+- immagini base vecchie o insicure
+
+
+```dockerfile
 sudo apt-get update
 sudo apt-get install -y wget apt-transport-https gnupg lsb-release
 
@@ -57,6 +67,6 @@ echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.
 sudo apt-get update
 sudo apt-get install -y trivy
 
-trivy image --scanners vuln --severity HIGH,CRITICAL nextcloud:latest
-
+trivy image --scanners vuln --severity HIGH,CRITICAL nextcloud:latest           #per scannerizzare una immagine specifica
+```
 
