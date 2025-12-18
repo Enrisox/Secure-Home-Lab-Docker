@@ -3,14 +3,14 @@
 **Benvenuto nel mio progetto personale dedicato alla costruzione di un ambiente self-hosted, modulare e scalabile, basato su:**
 
 * Ubuntu Server
-* Docker & Docker Compose
+* Docker 
 * Portainer
 * AdGuard Home (DNS filtering)
 * WireGuard (VPN)
 * Caddy (reverse proxy)
 * Ip tables/UFW (firewall nativo Linux)
 * Cloudflare DDNS
-* Crowdsec
+* Crowdsec & FAIL2BAN
 * Netdata
 
 Lo scopo della repository è documentare passo dopo passo la configurazione dell’intero sistema, in modo semplice, ripetibile e adatto sia ad ambienti VirtualBox sia ad hardware dedicato come Raspberry Pi o mini PC.
