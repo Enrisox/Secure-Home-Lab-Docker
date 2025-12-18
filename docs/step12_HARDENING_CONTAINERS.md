@@ -20,7 +20,7 @@ Il fatto che sia “in rete interna proxata da Caddy” riduce l’esposizione d
 ## Contromisure
 “Python minimal non-root” aiuta perché riduce l’impatto di molte escalation banali dentro al container, ma non protegge da bug kernel/host e non impedisce scansione/abusi verso altri target raggiungibili via rete. La vera differenza la fanno: privilegi/capabilities del container (es. capability pericolose come quelle che abilitano azioni quasi “da host”) e mount sensibili (docker.sock, volumi host in scrittura, /proc//sys esposti male). Anche le policy di sistema (seccomp/AppArmor) contano, perché limitano le syscalls e quindi restringono la superficie per exploit e tecniche di escape.​
 
-# Container security attraverso integrazioni nel docker-compose.yml
+## Container security attraverso integrazioni nel docker-compose.yml
 
 ## cap_drop: ALL 
 In Linux, il potere dell'utente root non è un blocco unico, ma è diviso in circa 40 unità chiamate **Capabilities**.
