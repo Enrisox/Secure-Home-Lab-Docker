@@ -36,13 +36,10 @@ Ho cercato di includere i problemi riscontrati e le relative soluzioni.<br>
 **🧱 Obiettivi del progetto**
 
 - **Infrastruttura Home Server Centralizzata:** Implementare un ambiente server domestico basato su Docker e Docker Compose per centralizzare e gestire i servizi di rete e le applicazioni self-hosted in modo modulare ed efficiente.
-
 - **Filtrare il traffico DNS a livello di rete per bloccare pubblicità e tracciamento.**
 - **Garantire l'accesso remoto sicuro tramite VPN.**
 - **Applicare pratiche di hardening sui container** (es. utenti non-root, filesystem read-only, limitazione capabilities) per ridurre la superficie di attacco.
-
 - **Deploy di Applicazioni Custom** Ospitare applicazioni sviluppate internamente con un focus su architetture moderne (reverse proxy con HTTPS automatico, reti isolate).
-
 - **Riproducibilità e Documentazione**: Documentare l'intera configurazione (Infrastructure as Code) tramite file docker-compose.yml, script e guide passo-passo, per consentire il disaster recovery rapido e la replicabilità del sistema su altri nodi.
 
 **Enrico Soci**
