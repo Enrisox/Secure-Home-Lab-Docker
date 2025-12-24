@@ -101,7 +101,7 @@ network:
                   - 1.1.1.1
                   - 8.8.8.8
 ```
-•	192.168.1.20 # l’IP che vogliamo assegnare al server
+•	192.168.1.20 # l’IP che vogliamo assegnare al server <br>
 •	192.168.1.1 → il gateway della nostra LAN
 
 
