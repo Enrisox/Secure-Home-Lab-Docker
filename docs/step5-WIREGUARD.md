@@ -1,7 +1,6 @@
 # WIREGUARD stack configuration
 
 1) Create volume wireguard_config.
-
 2) Create a new stack called wireguard and paste this YAML file.
 
 ```bash
@@ -46,31 +45,40 @@ To finish, scan the QR code with the Wireguard app on the mobile device and chec
 
 On the router you must configure port forwarding for the chosen port, on your home router!
 
-## DDNS in case of dynamic IP
+## Dynamic IP management with Cloudflare DDNS
 
-Since my ISP assigns me a different IP each time the home “router” is restarted, I created a DDNS domain with a free plan and replaced the endpoint with that domain so that if the IP changes, I do not have to manually modify the endpoint IP on my mobile device.
+The **Cloudflare DDNS container** keeps DNS records updated automatically so that my domain and subdomains always point to the Raspberry Pi, even when the ISP changes my public IP.
 
-In addition, to have more flexibility and unlimited subdomains, I created a free DuckDNS domain. DuckDNS provides a domain name such as enrisox.duckdns.org and allows you to add multiple subdomains without limits. The Raspberry automatically updates the public IP associated with this domain via a DuckDNS container or a cron script, so that all services hosted on the device remain always reachable even if the IP changes.
-
-This approach makes it possible to centralize the management of subdomains for the various services, such as web apps or internal servers, and simplifies the configuration of a reverse proxy like Nginx Proxy Manager, which will route each subdomain to the correct container while maintaining security and HTTPS support via Let’s Encrypt certificates.
+- Periodically queries my public IP (IPv4 and/or IPv6) via external services or DNS-over-HTTPS.
+- Compares it with the A/AAAA records in Cloudflare.
+- If the IP has changed, calls the Cloudflare API to update the DNS records for my domain/subdomains.
 
 ```bash
-version: "3.9"
+version: "3"
 
 services:
-  duckdns:
-    image: linuxserver/duckdns
-    container_name: duckdns
-    environment:
-      - PUID=1000              # you can find it with the command id <your user>
-      - PGID=1000              # you can find it with the command id <your user>
-      - TZ=Europe/Rome
-      - SUBDOMAINS=DOMINIOSCELTO    # your main domain
-      - TOKEN=IL_TUO_TOKEN_DUCKDNS          #you can find it on duckdns.org in the profile section
+  cloudflare-ddns:
+    image: favonia/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
     restart: unless-stopped
+    environment:
+      - CF_API_TOKEN= *********                 #Put your CLOUDFLARE API-TOKEN here
+      - CF_ZONE=enrisox-devops.it        # Cloudflare zone
+      - DOMAINS=*********, **********    # my domain and subdomains
+      - CF_TTL=auto
+      - IP_VERSION=4
+      - IP6_PROVIDER=none
 ```
-By clicking on the duckdns container logs you should see this message:
-![duckdns](../imgs/img9.png)
 
-Detecting IPv4 via DuckDNS
-DuckDNS request at Sun Dec  7 20:28:50 CET 2025 successful. IP(s) unchanged.
+Instead of the oznu/cloudflare-ddns image (which was giving 400 errors for credentials), I switched to the favonia/cloudflare-ddns container, configured with:
+
+- CF_API_TOKEN=...
+- DOMAINS=enrisox-devops.it,quizapp.enrisox-devops.it
+- IP_VERSION=4, IP6_PROVIDER=none, PROXIED=false
+
+The cloudflare-ddns container in my environment does one thing, but it's essential: it keeps my domain IP addresses updated on Cloudflare, so they always point to my current public IP.
+
+
+1. Every 5 minutes it detects my public IPv4 IP.
+2. Checks the DNS records on Cloudflare for the domains I ve set in DOMAINS .
+3. If the IP in the A records is different from the current one, it updates them automatically; if it's the same, it doesn't touch anything.
