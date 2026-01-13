@@ -1,7 +1,7 @@
 # Docker Installation
 
 **To begin, it is necessary to:** <br>
-1) Install the prerequisites
+1. Install the prerequisites
 
 ```bash
 sudo apt install ca-certificates curl gnupg -y
@@ -13,7 +13,7 @@ sudo apt install ca-certificates curl gnupg -y
 • gnupg → allows you to manage GPG keys, useful for verifying package authenticity.
 • -y → automatic confirmation, avoids asking "Do you want to continue?".
 
-**2)Add Docker's GPG key**
+**2. Add Docker's GPG key**
 
 ```bash
 sudo install -m 0755 -d /etc/apt/keyrings
