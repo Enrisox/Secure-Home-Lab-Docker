@@ -1,4 +1,5 @@
 # UFW firewall configuration
+UFW (Uncomplicated Firewall) is a user-friendly command-line tool for managing firewall rules on Linux systems. It was designed to simplify the configuration of iptables, the underlying packet filtering framework in the Linux kernel.
 
 **Command to show UFW Linux firewall status:**
 ```bash
