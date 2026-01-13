@@ -1,9 +1,10 @@
-# Installazione e configurazione Crowdsec
+# CrowdSec installation and configuration
 
-**CrowdSec** è un software di sicurezza open source che monitora i log (es. SSH e web server), riconosce pattern di attacco (come brute force e scansioni) e poi applica contromisure, tipicamente bloccando gli IP malevoli tramite componenti di “enforcement” (bouncer) o integrazioni con firewall/proxy.
-CrowdSec protegge il mio server in due modi: blocca proattivamente IP noti malevoli (community blocklist) e reagisce, ai comportamenti sospetti che vede nei miei log, generando ban (temporanei o permanenti).
+**CrowdSec**is an open-source security software that monitors logs (e.g. SSH and web servers), recognizes attack patterns (such as brute force and scans) and then applies countermeasures, typically blocking malicious IPs through "enforcement" components (bouncers) or integrations with firewalls/proxies.
 
-## Aggiungere il repository ufficiale
+CrowdSec protects my server in two ways: it proactively blocks known malicious IPs (community blocklist) and reacts to suspicious behaviors it sees in my logs, generating bans (temporary or permanent).
+
+## Add the official repository
 
 ```dockerfile
 curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.deb.sh | sudo bash
@@ -11,48 +12,49 @@ curl -s https://packagecloud.io/install/repositories/crowdsec/crowdsec/script.de
 #The repository is setup! You can now install packages.
 ```
 
-## Installare CrowdSec + lettura log
+## Install CrowdSec + log reading
 
 ```dockerfile
 sudo apt install -y crowdsec crowdsec-firewall-bouncer-iptables
 
-sudo reboot          #quando finisce
-
+sudo reboot          #when it finishes
 sudo systemctl enable crowdsec
 sudo systemctl start crowdsec
 sudo systemctl status crowdsec
 
 ```
-Se lo stato è enabled, e active, procediamo.
+If the status is enabled and active, we proceed.
 
-## Verificare che il motore funzioni
 
-Mostra statistiche live
-Es: pacchetti analizzati, ban attivi, alert
+## Verify that the engine works
+
+Show live statistics
+E.g.: analyzed packets, active bans, alerts
 
 ```dockerfile
 sudo cscli metrics
 ```
 
-## Mostra quali parser sono disponibili
-I parser (in CrowdSec) sono “regole” descritte in file YAML che spiegano come interpretare una stringa di log (una riga di log, o un campo estratto da un parser precedente) e trasformarla in campi strutturati su cui poi lavorano gli scenari.
+## Show which parsers are available
+
+Parsers (in CrowdSec) are "rules" described in YAML files that explain how to interpret a log string (a log line, or a field extracted from a previous parser) and transform it into structured fields that scenarios can then work on.
 
 ```dockerfile
 sudo cscli parsers list
 ```
 
 
-## Mostra lista scenarios
+## Show scenarios list
+
 ```dockerfile
 sudo cscli scenarios list
 ```
 
-Gli “scenari” in CrowdSec sono le regole di rilevamento comportamento: definiscono una euristica (in YAML) che correla eventi già parsati (es. tanti tentativi di login falliti da uno stesso IP in poco tempo) e decide quando quell’attività è sospetta/attacco.
-Gli scenari confrontano i log normalizzati dai parser con soglie/finestre temporali (count, timeframe, ecc.) per riconoscere pattern come brute force, scan, crawl aggressivi
+"Scenarios" in CrowdSec are behavioral detection rules: they define a heuristic (in YAML) that correlates already parsed events (e.g. many failed login attempts from the same IP in a short time) and decides when that activity is suspicious/an attack.
 
-Confrontano i log normalizzati dai parser con soglie/finestre temporali (count, timeframe, ecc.) per riconoscere pattern come brute force, scan, crawl aggressivi.
+Scenarios compare normalized logs from parsers with thresholds/time windows (count, timeframe, etc.) to recognize patterns such as brute force, scans, aggressive crawls.
 
-Quando uno scenario “scatta”, CrowdSec genera un alert (per tracciabilità) e può generare una o più decisions (es. ban temporaneo di un IP), che poi verranno applicate da un bouncer come iptables
+When a scenario "triggers", CrowdSec generates an alert (for traceability) and can generate one or more decisions (e.g. temporary IP ban), which will then be applied by a bouncer like iptables.
 
 ## log live
 ```dockerfile
@@ -60,27 +62,30 @@ sudo journalctl -u crowdsec -f
 ```
 
 ## Bouncer Crowdsec
-Non è servito impostare manualmente la chiave perché il bouncer iptables, installato via apt, può auto‑registrarsi sulla Local API quando CrowdSec è sulla stessa macchina e generare da solo la API key (di solito scrivendola in un file .yaml.local)
+I didn't need to manually set the key because the iptables bouncer, installed via apt, can auto-register on the Local API when CrowdSec is on the same machine and generate the API key by itself (usually writing it to a .yaml.local file).
 ```dockerfile
 sudo cat /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml.local
 ```
 
-Il **bouncer** di CrowdSec è il componente che mette in pratica le decisioni prese dal motore CrowdSec (ban, captcha, ecc.): il motore rileva l’attacco dai log e salva una “decisione” nella Local API, mentre il bouncer interroga la Local API e applica la contromisura nel punto giusto (firewall, Cloudflare, reverse proxy, ecc.)
-Nel mio caso, il crowdsec-firewall-bouncer è un bouncer “firewall”: applica i ban a livello di iptables/nftables sul server, bloccando il traffico in ingresso dagli IP “cattivi”.​
+The CrowdSec bouncer is the component that implements the decisions made by the CrowdSec engine (ban, captcha, etc.): the engine detects the attack from the logs and saves a "decision" in the Local API, while the bouncer queries the Local API and applies the countermeasure at the right point (firewall, Cloudflare, reverse proxy, etc.).
 
-Differenza:
-- **CrowdSec (engine/agent)**: analizza log → genera alert/decisioni. <br>​
-- **Bouncer**: legge decisioni dalla Local API (autenticandosi con una API key) → le applica (blocca).
+In my case, the crowdsec-firewall-bouncer is a "firewall" bouncer: it applies bans at the iptables/nftables level on the server, blocking incoming traffic from "bad" IPs.
 
-## Vedere IP bannati (CrowdSec)
-Per vedere gli IP che CrowdSec ha deciso di bannare (indipendentemente da iptables), usa:
-La **decision list** è il comando che mostra le “decisioni” attive salvate nella Local API di CrowdSec: in pratica l’elenco delle azioni da applicare e su quale target (IP, range, etc)
+**Difference:**
+
+- **CrowdSec** (engine/agent): analyzes logs → generates alerts/decisions.
+- **Bouncer**: reads decisions from the Local API (authenticating with an API key) → applies them (blocks).
+
+## View banned IPs (CrowdSec)
+To see the IPs that CrowdSec has decided to ban (regardless of iptables), use:
+The decision list is the command that shows active "decisions" saved in the CrowdSec Local API: basically the list of actions to apply and on which target (IP, range, etc.).
+
 ```dockerfile
 sudo cscli decisions list
 
-sudo ipset list crowdsec-blacklists-0 | head -n 30       #Per elencare gli IPv4 attualmente nel set (quelli che iptables sta droppando)
+sudo ipset list crowdsec-blacklists-0 | head -n 30       #To list the IPv4 currently in the set (those that iptables is dropping)
 
-sudo ipset list crowdsec6-blacklists-0 | head -n 20      #Per elencare gli IPv6 attualmente nel set (quelli che iptables sta droppando):
+sudo ipset list crowdsec6-blacklists-0 | head -n 20      #To list the IPv6 currently in the set (those that iptables is dropping)
 
 ```
 
