@@ -1,17 +1,17 @@
-# Passaggio da VM su PC host a Raspberry pi5 
+# Migration from VM on host PC to Raspberry Pi 5
 
-Il passaggio di consegne è stato molto rapido e ho ricreato la maggior parte delle cose da zero tranne che il file con le chiavi di Wireguard che ho passato al nuovo server tramite Filezilla
+The handover was very quick and I recreated most things from scratch except for the file with the WireGuard keys which I transferred to the new server via FileZilla.
 
+I archived and zipped the entire WireGuard configuration folder with the tar command and then transferred it with FileZilla, an SFTP software, to the Raspberry.
 
-Ho Archiviato e zippato con comando tar l'intera cartella di configurazione di WireGuard e l'ho poi trasferita con Filezilla, software di SFTP, nel raspberry.
 
 ```bash
 sudo tar -czvf wg_config_backup.tar.gz /etc/wireguard
 
--c        Create - crea un nuovo archivio.
--z        Gzip - comprime l'archivio con gzip. Questo rende il file più piccolo e lo fa finire in .gz.
--v        Verbose - mostra l'elenco dei file che vengono aggiunti all'archivio.
--f        File - specifica il nome del file di output (deve essere l'ultima opzione).
+-c        Create - creates a new archive.
+-z        Gzip - compresses the archive with gzip. This makes the file smaller and gives it a .gz extension.
+-v        Verbose - shows the list of files being added to the archive.
+-f        File - specifies the output file name (must be the last option).
 ```
 
-Successivamente ho completato le configurazioni e verificato con alcuni test che tutto fosse funzionante.
+Subsequently I completed the configurations and verified with some tests that everything was working.
