@@ -1,8 +1,8 @@
-# Configurazione WIREGUARD stack
+# WIREGUARD stack configuration
 
-1) crea volume wireguard_config
+1) Create volume wireguard_config.
 
-2) crea nuovo stack wireguard incollando questo file Yaml
+2) Create a new stack called wireguard and paste this YAML file.
 
 ```bash
 version: "3.8"
@@ -13,24 +13,25 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
-    network_mode: host        # tipo di rete è host
+    network_mode: host        # network type is host
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Rome
-      - SERVERURL= auto o mettere ip pubblico    # mettere ip pubblico!
-      - SERVERPORT=******    #mettere porta a piacere  , es: 51040
+      - SERVERURL= auto or set public IP    # set public IP!
+      - SERVERPORT=******    ## set any port you like, e.g.: 51076
       - PEERS=2           
-      - PEERDNS=*******       #ip privato ubuntu server
-      - INTERNAL_SUBNET=       #rete privata diversa da rete privata della lan      es: 10.10.10.0
-      - LOG_CONFS=true         #•	LOG_CONFS=true farà apparire QR code nel log  . Per esperienza non molto affidabile
+      - PEERDNS=*******       #my private ubuntu server IP
+      - INTERNAL_SUBNET=       #private network different from the LAN private network, e.g.: 10.10.10.0
+      - LOG_CONFS=true         #LOG_CONFS=true will make QR codes appear in the logs.
+
     volumes:
-      - wireguard_config:/config    #contiene le chiavi private dei peer
+      - wireguard_config:/config    #contains the peers’ private keys
       -/lib/modules:/lib/modules
     restart: unless-stopped
 
     ports:
-      - 50000:50000/udp        #la porta che abbiamo scelto
+      - 50000:50000/udp        #the port I chose
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -41,17 +42,17 @@ volumes:
 
 ```
 
-Per concludere, inquadrare QR code su app Wireguard del dispositivo mobile e controllare che i dati siano corretti( ip e porte) 
+To finish, scan the QR code with the Wireguard app on the mobile device and check that the data is correct (IP and ports).
 
-Sul router è necessario configurare il port forwarding della porta scelta, sul router di casa!
+On the router you must configure port forwarding for the chosen port, on your home router!
 
-## DDNS in caso di ip dinamico
+## DDNS in case of dynamic IP
 
-Dato che mio ISP mi assegna un IP diverso ad ogni ravvio del "router" di casa, ho creato un dominio DDNS con un piano gratuito e sostituito l'endpoint con il dominio suddetto in modo che se l'ip varia, non dovrò modifcare manualmente l'ip dell'endpoint dal mio dispositivo mobile. <br>
+Since my ISP assigns me a different IP each time the home “router” is restarted, I created a DDNS domain with a free plan and replaced the endpoint with that domain so that if the IP changes, I do not have to manually modify the endpoint IP on my mobile device.
 
-Inoltre, per avere maggiore flessibilità e sottodomini illimitati, ho creato un dominio DuckDNS gratuito. DuckDNS fornisce un nome a dominio come enrisox.duckdns.org e permette di aggiungere più sottodomini senza limiti. Il Raspberry aggiorna automaticamente l'IP pubblico associato a questo dominio tramite un container DuckDNS o uno script cron, in modo che tutti i servizi ospitati sul dispositivo rimangano sempre raggiungibili anche se l'IP cambia.
+In addition, to have more flexibility and unlimited subdomains, I created a free DuckDNS domain. DuckDNS provides a domain name such as enrisox.duckdns.org and allows you to add multiple subdomains without limits. The Raspberry automatically updates the public IP associated with this domain via a DuckDNS container or a cron script, so that all services hosted on the device remain always reachable even if the IP changes.
 
-Questo approccio permette di centralizzare la gestione dei sottodomini per i vari servizi, come web app o server interni, e semplifica la configurazione di un reverse proxy come Nginx Proxy Manager, che instraderà ogni sottodominio al container corretto mantenendo la sicurezza e il supporto per HTTPS tramite certificati Let’s Encrypt.
+This approach makes it possible to centralize the management of subdomains for the various services, such as web apps or internal servers, and simplifies the configuration of a reverse proxy like Nginx Proxy Manager, which will route each subdomain to the correct container while maintaining security and HTTPS support via Let’s Encrypt certificates.
 
 ```bash
 version: "3.9"
@@ -61,14 +62,14 @@ services:
     image: linuxserver/duckdns
     container_name: duckdns
     environment:
-      - PUID=1000              # lo trovi dal comando id <tuo user>
-      - PGID=1000              # lo trovi dal comando id <tuo user>
+      - PUID=1000              # you can find it with the command id <your user>
+      - PGID=1000              # you can find it with the command id <your user>
       - TZ=Europe/Rome
-      - SUBDOMAINS=DOMINIOSCELTO    # tuo dominio principale
-      - TOKEN=IL_TUO_TOKEN_DUCKDNS          #lo trovi su duckdns.org nella sezione profilo
+      - SUBDOMAINS=DOMINIOSCELTO    # your main domain
+      - TOKEN=IL_TUO_TOKEN_DUCKDNS          #you can find it on duckdns.org in the profile section
     restart: unless-stopped
 ```
-cliccando sui log del container duckdns si dovrebbe vedere questo messaggio:
+By clicking on the duckdns container logs you should see this message:
 ![duckdns](../imgs/img9.png)
 
 Detecting IPv4 via DuckDNS
