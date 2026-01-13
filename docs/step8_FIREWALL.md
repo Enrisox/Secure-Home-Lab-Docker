@@ -63,5 +63,5 @@ The firewall is configured with a default deny policy for incoming and routed tr
 Better to focus on potential attacks from outside, and filter only packets coming from IPs outside my LAN:
 
 ```bash
-sudo grep "BLOCK" /var/log/ufw.log | grep -v "192.168.4."           #se server è sulla 192.168.4.0/24 ad esempio
+sudo grep "BLOCK" /var/log/ufw.log | grep -v "192.168.4."           #if theserver is on 192.168.4.0/24 
 ```
