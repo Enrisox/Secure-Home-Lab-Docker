@@ -1,14 +1,14 @@
-# Installare Portainer per gestire i container da interfaccia grafica
+# Install Portainer to manage containers from a graphical interface
 
-Portainer permette di creare, avviare, fermare, configurare e monitorare i container Docker direttamente attraverso una dashboard web. Piuttosto che digitare comandi nella shell, possiamo interagire con i nostri container attraverso un'interfaccia grafica user-friendly.
+Portainer allows you to create, start, stop, configure and monitor Docker containers directly through a web dashboard. Rather than typing commands in the shell, we can interact with our containers through a user-friendly graphical interface.
 
-**1)Per iniziare ho creato il volume**
+**1)To start, I created the volume**
 
 ```bash
 sudo docker volume create portainer_data
 ```
 
-**2)Ho avviato Portainer**
+**2)I started Portainer**
 
 ```bash
 sudo docker run -d \
@@ -20,20 +20,20 @@ sudo docker run -d \
   -v portainer_data:/data \
   portainer/portainer-ce:latest
 ```
-* sudo docker run -d: Avvia Portainer in detached mode.  Questo significa che il terminale non rimarrà bloccato e potrai continuare a lavorare mentre il container è in esecuzione
-* -p 8000:8000 -p 9443:9443: Mappa le porte 8000 (HTTP) e 9443 (HTTPS) per l'accesso al servizio web di Portainer.
-* --name portainer: Nomina il container come "portainer".
-* --restart=always: Riavvia automaticamente Portainer se il container si ferma o se il sistema viene riavviato.
-* -v /var/run/docker.sock:/var/run/docker.sock: Consente a Portainer di comunicare con Docker sull'host per la gestione dei container.
-* -v portainer_data:/data: Salva i dati di configurazione di Portainer in un volume persistente.
-* portainer/portainer-ce:latest: Usa l'ultima versione di Portainer Community Edition.
+• sudo docker run -d: Starts Portainer in detached mode. This means the terminal won't remain blocked and you can continue working while the container is running.
+• -p 8000:8000 -p 9443:9443: Maps ports 8000 (HTTP) and 9443 (HTTPS) for access to the Portainer web service.
+• --name portainer: Names the container as "portainer".
+• --restart=always: Automatically restarts Portainer if the container stops or if the system is rebooted.
+• -v /var/run/docker.sock:/var/run/docker.sock: Allows Portainer to communicate with Docker on the host for container management.
+• -v portainer_data:/data: Saves Portainer configuration data in a persistent volume.
+• portainer/portainer-ce:latest: Uses the latest version of Portainer Community Edition.
 
-3)**ho aperto Portainer da browser web in versione https**
+3)**I opened Portainer from a web browser in HTTPS version**
 
 ```bash
-https://IP-DELLA-VM:9443      # HTTPS se sulla 9443, altrimenti 8000 con http
+https://IP-DELLA-VM:9443      # HTTPS on port 9443, otherwise 8000 with http
 ```
 
 ![Portainer](../imgs/img2.png)
 
-Portainer è pronto all'uso quindi procediamo al prossimo step, il 4, dove installerò container Wireguard per VPN e Adguard come filtro tracking e advertising.
+Portainer is ready to use, so we proceed to the next step, step 4, where I will install the Wireguard container for VPN and Adguard as a tracking and advertising filter.
