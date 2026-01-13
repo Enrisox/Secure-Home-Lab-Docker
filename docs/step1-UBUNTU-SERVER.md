@@ -1,22 +1,22 @@
-# Preparazione dell'ambiente virtuale su virtualbox
+# Preparation of the virtual environment on VirtualBox
+As a first step, I prepared a VM on VirtualBox on my desktop PC, but in the future I will move the whole setup to a Raspberry Pi 5 with 8 GB.
 
-Come primo step ho preparato una VM su virtual Box, sul mio PC desktop, ma in futuro sposterò tutta la struttura su UN Raspberry pi 5 da 8 gb.
+I installed Ubuntu Server on the VM, after choosing English as the language (Italian is not available during installation, it will be installed later from the terminal).  
+No additional services selected except the SSH server.  
+Network adapter set to bridge mode from VirtualBox settings.  
 
-Ho installato Ubuntu server sulla VM, dopo aver scelto lingua inglese( quella italiana non è disponibile durante installazione, la installeremo successivamente dal terminale).<br>
-Nessun servizio aggiuntivo selezionato eccetto il server SSH.  <br>
-Scheda in bridge da impostazioni virtual box.<br>
-
-**Una volta conclusa installazione ho proceduto ad aggiornare i pacchetti con:**
+**Once the installation was completed, I updated the packages with:**
 
 ```bash
 sudo apt update
 sudo apt upgrade
-ip a     # per vedere l'ip della VM e collegarmi in ssh da mia macchina host 
-```
-**Ssh non funzionava perchè il server ssh non trovava le chiavi host necessarie a far partire il servizio ssh.
-Con un po' di troubleshooting ho trovato la soluzione:**
+ip a     # to see the VM IP and connect via SSH from my host machine
 
-**Quando avvii un server SSH, il server ha bisogno di chiavi host per poter stabilire connessioni sicure con i client SSH. Le chiavi host sono un insieme di chiavi crittografiche che identificano in modo univoco il server e vengono utilizzate per stabilire un canale sicuro durante la connessione SSH.**
+```
+SSH was not working because the SSH server could not find the host keys needed to start the SSH service.
+After some troubleshooting I found the solution:
+
+When you start an SSH server, it needs host keys to establish secure connections with SSH clients. Host keys are a set of cryptographic keys that uniquely identify the server and are used to establish a secure channel during the SSH connection.
 
 ```bash
 systemctl status ssh 
@@ -25,7 +25,9 @@ systemctl status ssh
 
 **No hostkeys available - exiting** significa che il server SSH non riesce a trovare le chiavi host necessarie per avviarsi correttamente. Senza queste chiavi, sshd (il demone SSH) non può avviarsi e rifiuterà le connessioni in entrata.
 
-**Le chiavi host vengono generate automaticamente quando il server SSH viene installato o configurato per la prima volta, ma se mancano (ad esempio, dopo una nuova installazione o la rimozione accidentale), sshd non può avviarsi e darà questo errore.**
+“No hostkeys available - exiting” means that the SSH server cannot find the host keys needed to start correctly. Without these keys, sshd (the SSH daemon) cannot start and will refuse incoming connections.
+
+Host keys are generated automatically when the SSH server is installed or configured for the first time, but if they are missing (for example, after a fresh installation or accidental removal), sshd cannot start and will show this error.
 
 ```bash
 sudo ssh-keygen -A          # -A dice a ssh-keygen di generare tutte le chiavi host mancanti (rsa, ecdsa, ed25519, dsa).
@@ -33,15 +35,15 @@ sudo systemctl restart ssh     #restartiamo il server ssh
 sudo systemctl status ssh       #ora si dovrebbe vedere active (running)
 ```
 
-# Configurazione della tastiera e lingua italiana su Ubuntu Server
-Ho impostato la lingua italiana impostando la tastiera italiana da riga di comando Ubuntu server
+# Keyboard and Italian language configuration on Ubuntu Server
+I set the Italian language by configuring the Italian keyboard layout from the Ubuntu Server command line.
 
-**Per configurare correttamente la tastiera, ho eseguito il seguente comando:**
+**To correctly configure the keyboard, I ran the following command:**
 
 ```bash
 sudo dpkg-reconfigure keyboard-configuration
 ```
-**Durante la procedura, scegliere le seguenti opzioni:**
+**During the procedure, choose the following options:**
 
 Keyboard model: Generic 105-key PC (o il modello che corrisponde alla tua tastiera)
 Country of origin: Italy
@@ -50,13 +52,13 @@ AltGr: default
 Compose key: None
 Ctrl+Alt+Backspace: No
 
-**Dopo aver configurato la tastiera, bisogna ricaricare la configurazione con:**
+**After configuring the keyboard, you need to reload the configuration with:**
 
 ```bash
 sudo service keyboard-setup restart
 sudo setupcon
 ```
-**Per aggiungere la lingua italiana e impostare l’italiano come locale:**
+**To add Italian language support and set Italian as the locale:**
 
 ```bash
 sudo apt install language-pack-it   
@@ -68,22 +70,19 @@ locale       #verifica
 
 
 
-# Assegnare IP statico a Ubuntu server
+# Assigning a static IP to Ubuntu Server
 
-Un file Netplan è un file YAML che definisce la configurazione della rete su Ubuntu e altre distribuzioni Linux moderne. Serve a configurare interfacce, IP, gateway, DNS e altre impostazioni di rete, sostituendo i vecchi metodi come /etc/network/interfaces.
+A Netplan file is a YAML file that defines network configuration on Ubuntu and other modern Linux distributions. It is used to configure interfaces, IPs, gateways, DNS and other network settings, replacing older methods such as /etc/network/interfaces.
 
-50-cloud-init.yaml è il file generato automaticamente da cloud-init durante l’installazione del mio Ubuntu Server.
+50-cloud-init.yaml is the file automatically generated by cloud-init during the installation of my Ubuntu Server.
 
-Il numero 50 indica che è letto dopo eventuali file “base” (ad esempio 01-netcfg.yaml) e può quindi sovrascriverne alcune impostazioni.
+The number 50 indicates that it is read after any “base” files (for example 01-netcfg.yaml) and can therefore override some of their settings.
 
-**Se vuoi modificare l’IP statico, conviene modificare questo file oppure creare un nuovo file con un numero più alto (es. 99-custom.yaml) per sovrascrivere le impostazioni senza toccare l’originale.**
+If you want to modify the static IP, it is a good idea to edit this file or create a new file with a higher number (e.g. 99-custom.yaml) to override the settings without touching the original one.
 
-1)**Io ho prima fatto un backup del file originale con:**
-```bash
-sudo cp /etc/netplan/50-cloud-init.yaml /etc/netplan/50-cloud-init.yaml.bak
-```
 
-2)**modificato il file con:**
+
+1)**I edited the file with:**
 ```bash
 sudo nano /etc/netplan/50-cloud-init.yaml
 ```
@@ -105,15 +104,13 @@ network:
 •	192.168.1.1 → il gateway della nostra LAN
 
 
-3)**Infine ho applicato la configurazione netplan**
+2)**Next, I applied the Netplan configuration**
 ```bash
 sudo netplan apply
 ip a show enp0s3
 ```
 
-
-
-**Nel prossimo step mostrerò l'installazione di Docker sulla VM Ubuntu server.**
+**In the next step I will show the installation of Docker on the Ubuntu Server VM.**
 
 
 
