@@ -42,21 +42,21 @@ echo \
  $(. /etc/os-release && echo $VERSION_CODENAME) stable" \
  | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
-*	dpkg --print-architecture → restituisce la tua architettura (amd64, arm64, ecc.).
-*	$(. /etc/os-release && echo $VERSION_CODENAME) → prende il nome della tua versione Ubuntu (es. focal, jammy).
-*	Il tutto scrive in /etc/apt/sources.list.d/docker.list una riga che dice a Ubuntu da dove scaricare Docker.
-*	signed-by=/etc/apt/keyrings/docker.gpg → specifica di usare la chiave appena scaricata.
+• dpkg --print-architecture → returns your architecture (amd64, arm64, etc.).
+• $(. /etc/os-release && echo $VERSION_CODENAME) → gets your Ubuntu version name (e.g. focal, jammy).
+• All this writes a line to /etc/apt/sources.list.d/docker.list that tells Ubuntu where to download Docker from.
+• signed-by=/etc/apt/keyrings/docker.gpg → specifies to use the key just downloaded.
 
 **- Install Docker**
 ```bash
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 ```
-•	docker-ce → il “Docker Engine” vero e proprio.
-•	docker-ce-cli → l’interfaccia a riga di comando (docker ...).
-•	containerd.io → gestore dei container sottostante.
-•	docker-buildx-plugin → estensione per build avanzate.
-•	docker-compose-plugin → permette di usare docker compose
+• docker-ce → the actual "Docker Engine".
+• docker-ce-cli → the command line interface (docker ...).
+• containerd.io → underlying container runtime.
+• docker-buildx-plugin → extension for advanced builds.
+• docker-compose-plugin → allows you to use docker compose.
 ```bash
 docker --version     #Mostra la versione installata di Docker 
 ```
