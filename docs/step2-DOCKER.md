@@ -34,7 +34,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
 sudo chmod a+r /etc/apt/keyrings/docker.gpg      # Ensures everyone can read the key (required by apt).
 ```
 
-**3)Add the Docker repository**
+**- Add the Docker repository**
 ```bash
 echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
@@ -47,7 +47,7 @@ echo \
 *	Il tutto scrive in /etc/apt/sources.list.d/docker.list una riga che dice a Ubuntu da dove scaricare Docker.
 *	signed-by=/etc/apt/keyrings/docker.gpg → specifica di usare la chiave appena scaricata.
 
-**4)Install Docker**
+**- Install Docker**
 ```bash
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
@@ -61,7 +61,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 docker --version     #Mostra la versione installata di Docker 
 ```
 
-**5)Optional - run Docker commands without "sudo"**
+**- Optional - run Docker commands without "sudo"**
 ```bash
 sudo groupadd docker           # crea il gruppo 'docker', se non esiste
 sudo usermod -aG docker $USER  # aggiungi il tuo utente al gruppo
