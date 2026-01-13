@@ -1,39 +1,40 @@
-# Installazione Docker 
+# Docker Installation
 
-**Per cominciare è necessario:
-1)installare i prerequisiti**
+**To begin, it is necessary to:** <br>
+1) Install the prerequisites
 
 ```bash
 sudo apt install ca-certificates curl gnupg -y
+
 ```
 
-•	ca-certificates → serve a Ubuntu per gestire i certificati SSL/TLS. Necessario per scaricare pacchetti sicuri via HTTPS.
-•	curl → strumento per scaricare file da internet da linea di comando.
-•	gnupg → permette di gestire chiavi GPG, utili per verificare l’autenticità dei pacchetti.
-•	-y → conferma automatico, evita che ti chieda “Vuoi continuare?”.
+• ca-certificates → allows Ubuntu to manage SSL/TLS certificates. Necessary to download secure packages via HTTPS.
+• curl → tool to download files from the internet via command line.
+• gnupg → allows you to manage GPG keys, useful for verifying package authenticity.
+• -y → automatic confirmation, avoids asking "Do you want to continue?".
 
-**2)Aggiungere la GPG key di Docker**
+**2)Add Docker's GPG key**
 
 ```bash
 sudo install -m 0755 -d /etc/apt/keyrings
 ```
 
-•	Crea la cartella /etc/apt/keyrings con permessi 0755 (leggibile/eseguibile da tutti, scrivibile solo dal proprietario).
-•	Serve per mettere la chiave GPG in un posto sicuro e standard.
+• Creates the /etc/apt/keyrings folder with 0755 permissions (readable/executable by all, writable only by owner).
+• Used to store the GPG key in a secure and standard location.
 
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
  | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 ```
-•	Scarica la chiave pubblica GPG di Docker.
-•	--dearmor converte la chiave in un formato leggibile da apt.
-•	La salva in /etc/apt/keyrings/docker.gpg.
+• Downloads Docker's public GPG key.
+• --dearmor converts the key to a format readable by apt.
+• Saves it to /etc/apt/keyrings/docker.gpg.
 
 ```bash
-sudo chmod a+r /etc/apt/keyrings/docker.gpg         #Assicura che tutti possano leggere la chiave (necessario per apt).
+sudo chmod a+r /etc/apt/keyrings/docker.gpg      # Ensures everyone can read the key (required by apt).
 ```
 
-**3)Aggiungere il repository Docker**
+**3)Add the Docker repository**
 ```bash
 echo \
 "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
@@ -46,7 +47,7 @@ echo \
 *	Il tutto scrive in /etc/apt/sources.list.d/docker.list una riga che dice a Ubuntu da dove scaricare Docker.
 *	signed-by=/etc/apt/keyrings/docker.gpg → specifica di usare la chiave appena scaricata.
 
-**4)installare Docker**
+**4)Install Docker**
 ```bash
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
@@ -60,7 +61,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 docker --version     #Mostra la versione installata di Docker 
 ```
 
-**5)Opzionale- eseguire comandi Docker senza "sudo"**
+**5)Optional - run Docker commands without "sudo"**
 ```bash
 sudo groupadd docker           # crea il gruppo 'docker', se non esiste
 sudo usermod -aG docker $USER  # aggiungi il tuo utente al gruppo
