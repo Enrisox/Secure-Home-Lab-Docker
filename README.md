@@ -1,6 +1,6 @@
 # Secure-Home-Lab-Docker
 
-**Benvenuto nel mio progetto personale dedicato alla costruzione di un ambiente self-hosted, modulare e scalabile, basato su:**
+**Welcome to my personal project dedicated to building a self-hosted, modular, and scalable environment based on:**
 
 * Ubuntu Server
 * Docker 
@@ -8,16 +8,16 @@
 * AdGuard Home (DNS filtering)
 * WireGuard (VPN)
 * Caddy (reverse proxy)
-* Ip tables/UFW (firewall nativo Linux)
+* Ip tables/UFW 
 * Cloudflare DDNS
 * Crowdsec & FAIL2BAN
 * Netdata
 
-Lo scopo della repository è documentare passo dopo passo la configurazione dell’intero sistema, in modo semplice, ripetibile e adatto sia ad ambienti VirtualBox sia ad hardware dedicato come Raspberry Pi o mini PC.
-Ho cercato di includere i problemi riscontrati e le relative soluzioni.<br>
-**Il progetto è iniziato a novembre 2025 ed è ancora in costante integrazione e aggiornamento.**
+The purpose of this repository is to document step-by-step the configuration of the entire system in a simple, repeatable way, suitable for both VirtualBox environments and dedicated hardware like Raspberry Pi or mini PCs.
+I tried to include the issues encountered and their solutions.  
+**The project started in November 2025 and is still under constant integration and updates.**
 
-📚**Indice dei contenuti**
+📚**Table of Contents**
 
 📄 [Step 1 – Ubuntu Server](docs/step1-UBUNTU-SERVER.md)  
 📄 [Step 2 – Docker](docs/step2-DOCKER.md)  
@@ -33,14 +33,17 @@ Ho cercato di includere i problemi riscontrati e le relative soluzioni.<br>
 📄 [Step 12 – hardening](docs/step12_HARDENING_CONTAINERS.md)<br>
 
 
-**🧱 Obiettivi del progetto**
+**🧱 Project Goals**
 
-- **Infrastruttura Home Server Centralizzata:** Implementare un ambiente server domestico basato su Docker per centralizzare e gestire i servizi di rete e le applicazioni self-hosted in modo modulare ed efficiente.
-- **Filtrare il traffico DNS a livello di rete per bloccare pubblicità e tracciamento.**
-- **Garantire l'accesso remoto sicuro tramite VPN.**
-- **Applicare pratiche di hardening sui container** (es. utenti non-root, filesystem read-only, limitazione capabilities) per ridurre la superficie di attacco.
-- **Deploy di Applicazioni Custom** Ospitare applicazioni sviluppate internamente con un focus su architetture moderne (reverse proxy con HTTPS automatico, reti isolate).
-- **Riproducibilità e Documentazione**: Documentare l'intera configurazione (Infrastructure as Code) tramite file docker-compose.yml, script e guide passo-passo, per consentire il disaster recovery rapido e la replicabilità del sistema su altri nodi.
+- **Centralized Home Server Infrastructure:** Implement a Docker-based home server environment to centralize and manage network services and self-hosted applications in a modular and efficient way.
+- **Filter DNS traffic at the network level to block ads and tracking.**
+- **Ensure secure remote access via VPN.**
+- **Apply container hardening practices** (e.g., non-root users, read-only filesystem, capability limitations) to reduce the attack surface.
+- **Deploy Custom Applications:** Host internally developed applications with a focus on modern architectures (reverse proxy with automatic HTTPS, isolated networks).
+- **Reproducibility and Documentation:** Document the entire configuration (Infrastructure as Code) through docker-compose.yml files, scripts, and step-by-step guides to enable rapid disaster recovery and system replicability on other nodes.
+
+⭐ **If you liked my project, give it a star!**
+
 
 **Enrico Soci**
 
