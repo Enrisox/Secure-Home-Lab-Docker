@@ -1,7 +1,7 @@
 # Docker Installation
 
 **To begin, it is necessary to:** <br>
-- Install the prerequisites
+**- Install the prerequisites**
 
 ```bash
 sudo apt install ca-certificates curl gnupg -y
