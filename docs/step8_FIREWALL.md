@@ -1,36 +1,37 @@
-# Configurazione firewall UFW
-**Comando per mostrare stato firewall UFW Linux:**
+# UFW firewall configuration
+
+**Command to show UFW Linux firewall status:**
 ```bash
 sudo ufw status verbose
 ```
 
-**Ho aggiunto le rules per bloccare tutto in ingresso e lasciare uscire traffico liberamente:**
+**I added rules to block all incoming traffic and allow outgoing traffic freely:**
 ```bash
 sudo ufw default deny incoming
 sudo ufw default allow outgoing
 ```
 
-**Ho permesso solo i servizi che servono: Caddy e Wireguard**
+**I only allowed the services I need: Caddy and WireGuard**
 ```bash
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
-sudo ufw allow 53000/udpsudo ufw allow 53000/udp     #ipotizziamo una porta 53000 impostata nel port-forwarding del router
-sudo ufw allow from 192.168.4.0/24 to any port 22 proto tcp       #accesso in SSH da dispositivi nella LAN
+sudo ufw allow 53000/udpsudo ufw allow 53000/udp     #assuming a port 53000 set in the router's port-forwarding
+sudo ufw allow from 192.168.4.0/24 to any port 22 proto tcp       #SSH access from devices on the LAN
 ```
-## Regola SSH solo tramite VPN
-Quando sei connesso alla VPN, il tuo client riceve un IP interno (es. 10.8.0.x).
-Per far sì che solo chi è nella VPN possa fare SSH:
+## SSH rule only via VPN
+When you are connected to the VPN, your client receives an internal IP (e.g. 10.8.0.x).
+To ensure that only those on the VPN can SSH:
 
 ```bash
 sudo ufw allow from 10.8.0.0/24 to any port 22 proto tcp
 ```
 
-Spiegazione:
-10.8.0.0/24 → subnet WireGuard
-to any port 22 → accesso SSH
-proto tcp → protocollo TCP
+Explanation:
+10.8.0.0/24 → subnet WireGuard I choose
+to any port 22 →  SSH access
+proto tcp →  TCP protocol
 
-**Attiviamo firewall
+**Enable the firewall:**
 ```bash
 sudo ufw enable
 ```
@@ -49,16 +50,17 @@ To                         Action      From
 22/tcp                     ALLOW IN    rete-privata-virtuale(VPN)/S.M
 80/tcp (v6)                ALLOW IN    Anywhere (v6)
 443/tcp (v6)               ALLOW IN    Anywhere (v6)
-53000/udp (v6)             ALLOW IN    Anywhere (v6)       #porta della VPN
+53000/udp (v6)             ALLOW IN    Anywhere (v6)       #VPN port
 ```
-UFW tiene un registro dei pacchetti bloccati o consentiti.
-Livello “low” significa che logga solo pacchetti sospetti o bloccati, non ogni singolo pacchetto.
-Permette di monitorare tentativi di intrusione o accessi sospetti senza saturare il disco.
+UFW keeps a log of blocked or allowed packets.
+"Low" level means it only logs suspicious or blocked packets, not every single packet.
+Allows monitoring of intrusion attempts or suspicious access without saturating the disk.
 
-## Riassunto
-Il firewall è configurato con politica di default deny in ingresso e routed, permettendo solo il traffico necessario ai servizi (SSH LAN/VPN, Web, WireGuard), mentre il traffico in uscita è libero. Questo approccio riduce drasticamente la superficie di attacco e garantisce monitoraggio tramite log
+## Summary
+The firewall is configured with a default deny policy for incoming and routed traffic, allowing only the traffic necessary for services (SSH LAN/VPN, Web, WireGuard), while outgoing traffic is unrestricted. This approach drastically reduces the attack surface and ensures monitoring through logs.
 
-Meglio concentrarmi su potenziali attacchi dall’esterno, e filtrare solo pacchetti provenienti da IP fuori dalla mia LAN
+Better to focus on potential attacks from outside, and filter only packets coming from IPs outside my LAN:
+
 ```bash
 sudo grep "BLOCK" /var/log/ufw.log | grep -v "192.168.4."           #se server è sulla 192.168.4.0/24 ad esempio
 ```
