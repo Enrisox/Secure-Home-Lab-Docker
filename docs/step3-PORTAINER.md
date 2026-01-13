@@ -20,13 +20,13 @@ sudo docker run -d \
   -v portainer_data:/data \
   portainer/portainer-ce:latest
 ```
-• sudo docker run -d: Starts Portainer in detached mode. This means the terminal won't remain blocked and you can continue working while the container is running.
-• -p 8000:8000 -p 9443:9443: Maps ports 8000 (HTTP) and 9443 (HTTPS) for access to the Portainer web service.
-• --name portainer: Names the container as "portainer".
-• --restart=always: Automatically restarts Portainer if the container stops or if the system is rebooted.
-• -v /var/run/docker.sock:/var/run/docker.sock: Allows Portainer to communicate with Docker on the host for container management.
-• -v portainer_data:/data: Saves Portainer configuration data in a persistent volume.
-• portainer/portainer-ce:latest: Uses the latest version of Portainer Community Edition.
+- sudo docker run -d: Starts Portainer in detached mode. This means the terminal won't remain blocked and you can continue working while the container is running.
+- -p 8000:8000 -p 9443:9443: Maps ports 8000 (HTTP) and 9443 (HTTPS) for access to the Portainer web service.
+- --name portainer: Names the container as "portainer".
+- --restart=always: Automatically restarts Portainer if the container stops or if the system is rebooted.
+- -v /var/run/docker.sock:/var/run/docker.sock: Allows Portainer to communicate with Docker on the host for container management.
+- -v portainer_data:/data: Saves Portainer configuration data in a persistent volume.
+- portainer/portainer-ce:latest: Uses the latest version of Portainer Community Edition.
 
 3)**I opened Portainer from a web browser in HTTPS version**
 
