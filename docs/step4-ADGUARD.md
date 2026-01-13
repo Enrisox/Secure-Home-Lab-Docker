@@ -1,47 +1,48 @@
-# ADGUARD configurazione con Portainer
+# ADGUARD configuration with Portainer
 
-Quando crei un container in Advanced container settings → Restart policy, le opzioni sono:
+When you create a container in Advanced container settings → Restart policy, the options are:
 
-* No	Il container non si riavvia mai automaticamente.
-* Always	Il container si riavvia sempre se si ferma, incluso al riavvio del server.
-* Unless-stopped	Si riavvia sempre, tranne se lo fermi manualmente.
-* On-failure	Si riavvia solo se il container termina con errore. Puoi anche impostare un numero massimo di tentativi.
+* No - The container never restarts automatically.
+* Always - The container always restarts if it stops, including when the server reboots.
+* Unless-stopped - Always restarts, except if you stop it manually.
+* On-failure - Only restarts if the container terminates with an error. You can also set a maximum number of attempts.
 
-Sia per Wireguard che ADguard, è consigliato scegliere opzione **unless-stopped o always**.
+For both Wireguard and ADguard, it is recommended to choose **unless-stopped or always**.
 
-Problema: mi era impossibile deployare container su porta 53 perchè è già occupata in macchina Ubuntu server.
+Problem: It was impossible for me to deploy a container on port 53 because it is already occupied on the Ubuntu Server machine.
+
 
 ```bash
 sudo netstat -tulnp | grep :53
 ```
 
-**systemd-resolved** sta occupando la porta 53 sulle interfacce locali. E' un servizio di gestione della risoluzione dei nomi di dominio (DNS) presente nelle distribuzioni Linux moderne
+**systemd-resolved** is occupying port 53 on the local interfaces. It is a DNS (Domain Name System) resolution management service present in modern Linux distributions.
 
-**Soluzione:**
+**Solution:**
 
-**Disabilitare systemd-resolved**
+**Disable systemd-resolved**
 ```bash
 sudo systemctl stop systemd-resolved
 sudo systemctl disable systemd-resolved
 ```
 
-**Sistemare /etc/resolv.conf**
-Systemd-resolved usa un link simbolico per resolv.conf, quindi dobbiamo rimuoverlo e creare un file nuovo:
+**Fix /etc/resolv.conf**
+Systemd-resolved uses a symbolic link for resolv.conf, so we need to remove it and create a new file:
 
 ```bash
 sudo rm /etc/resolv.conf
 sudo bash -c "echo 'nameserver 1.1.1.1' > /etc/resolv.conf"
-sudo systemctl restart docker     #Riavviare Docker (opzionale ma consigliato)
+sudo systemctl restart docker     #Restart Docker (optional but recommended)
 ```
 
 ## ADGUARD
 
-1)**Ho creato volumi per Adguard dal menù a sx di Portainer**
+1)**I created volumes for Adguard from the left menu in Portainer**
 
 adguard_config <br>
 adguard_data
 
-2)**Da Portainer --> stack --> nuovo stack --> incolliamo il docker compose desiderato**
+2)**From Portainer --> stack --> new stack --> paste the desired docker compose**
 ```bash
 version: "3"
 services:
@@ -58,11 +59,11 @@ services:
       - "4464:443/udp"
       - "853:853/tcp"
       - "853:853/udp"
-    volumes:    #I dati del container montati su questi volumi saranno persistenti, anche se il container viene eliminato.
+    volumes:    #Container data mounted on these volumes will be persistent, even if the container is deleted.
       - adguard_work:/opt/adguardhome/work  
       - adguard_conf:/opt/adguardhome/conf
 
-volumes:    #Docker crea automaticamente dei volumi gestiti internamente
+volumes:    #Docker automatically creates internally managed volumes
   adguard_work:
   adguard_conf:
 
@@ -70,40 +71,38 @@ volumes:    #Docker crea automaticamente dei volumi gestiti internamente
 
 ![ADGUARD](../imgs/img3.png)
 
-### Configurazione ADguard Home
+### ADguard Home configuration
 
 http://IPSERVER:3000       
 
 ![ADGUARD](../imgs/img4.png)
 
-Seguire la procedura guidata:
-Lascia cartelle come sono (sono i due volumi)
-Lascia porte 80 / 443
-Crea login
+1. Follow the guided procedure:
+2. Leave directories as they are (they are the two volumes)
+3. Leave ports 80 / 443
+4. Create login
 
-Poi sarà possibile entrare normalmente in:
+Then it will be possible to log in normally at:
 http://IPSERVER:80
-Attiva HTTPS (direttamente da AdGuard più avanti)da settings → Encryption
+Enable HTTPS (directly from AdGuard later) from settings → Encryption
 
+**If you have a domain:**
+1. choose Let's Encrypt
+2. enter domain
+3. enter email
 
-**Se si ha un dominio:**
-scegli Let’s Encrypt
-inserisci dominio
-inserisci email
+**If you do NOT have a domain:**
+choose Self-signed certificate
 
-**Se NON si ha un dominio:**
-scegli Self-signed certificate
-
-**Il container userà la porta:**
+**the container will use the port:**
 https://IPSERVER:8443
 
-### Da windows e dispositivi mobile ho impostato il container Adguard come server DNS preferito
-
+### From windows e mobile devices I set the Adguard container as the preferred DNS server
 ![ADGUARD](../imgs/img6.png)
 
-**wind+R → ncpa.cpl → proprietà → ipv4 → imposta dns manuale**
+**wind+R → ncpa.cpl → properties → ipv4 → set manual DNS**
 
-#### Per far funzionare ADguard anche con dispositivi mobile collegati in VPN è necessario modificare il file AdGuardHome.yaml mettendo in bind_host: 0.0.0.0
+**To make ADguard work also with mobile devices connected via VPN, you need to modify the AdGuardHome.yaml file by setting bind_host: 0.0.0.0**
 ```bash
 find / -name AdGuardHome.yaml    #per trovare file
 ```
@@ -113,6 +112,7 @@ find / -name AdGuardHome.yaml    #per trovare file
 docker restart adguardhome
 ```
 
-Per far funzionare Adguard come DNS può essere necessario collegarsi a proprio router di casa e disattivare l'impostazione che impone il DNS server del proprio internet provider su tutti i dispositivi connessi, rendendo di fatto possibile così usare ADguard.
+To make Adguard work as a DNS server, it may be necessary to connect to your home router and disable the setting that forces your internet provider's DNS server on all connected devices, thus making it possible to use ADguard.
 
-Dopo averlo fatto, controllare su siti come DNSleak.com se è presente un dns dell'ISP o i vari dns server cloudflare di Adguard.
+After doing this, check on sites like DNSleak.com whether your ISP's DNS is present or the various Cloudflare DNS servers from Adguard.
+
